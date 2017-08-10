@@ -1,4 +1,6 @@
-﻿press = 0
+;ver = 1.0
+;DON'T CHANGE THE VERSION ABOVE
+press = 0
 input = 0
 startstop = 0
 Gui(){
