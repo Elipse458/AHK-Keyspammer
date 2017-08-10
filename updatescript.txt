@@ -5,4 +5,5 @@ cls
 echo Deleting old keyspammer
 del keyspammer.ahk
 ren keyspammer1.ahk keyspammer.ahk
+del updatescript.bat
 exit
