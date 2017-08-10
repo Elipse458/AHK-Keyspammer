@@ -1,0 +1,8 @@
+@echo off
+title KeySpammer Updater
+color 0e
+cls
+echo Deleting old keyspammer
+del keyspammer.ahk
+ren keyspammer1.ahk keyspammer.ahk
+exit
