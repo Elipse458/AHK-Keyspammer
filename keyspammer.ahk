@@ -1,5 +1,36 @@
-;ver = 1.0
-;DON'T CHANGE THE VERSION ABOVE
+currentver = 1.0
+currentver += 0.0
+Gui, New,, Updater
+Gui, Font, s12 W700 cWhite
+Gui, Color, 505050
+Gui, Add, Text,, Searching for updates...
+Gui, Add, Progress, w185 h20 cFFD700 vUpdateProg
+Gui, Show
+whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+whr.Open("GET", "https://raw.githubusercontent.com/Elipse458/AHK-Keyspammer/master/version.txt", true)
+whr.Send()
+whr.WaitForResponse()
+remoteversion := whr.ResponseText
+remoteversion += 0.0
+GuiControl,, UpdateProg, +25
+if ("" . remoteversion = currentver)
+{
+GuiControl,, UpdateProg, 100
+MsgBox, No updates found!
+Gui, Destroy
+}
+else
+{
+MsgBox, Updating to version %remoteversion%
+UrlDownloadToFile, https://raw.githubusercontent.com/Elipse458/AHK-Keyspammer/master/keyspammer.ahk, %A_WorkingDir%\keyspammer1.ahk
+GuiControl,, UpdateProg, +25
+UrlDownloadToFile, https://raw.githubusercontent.com/Elipse458/AHK-Keyspammer/master/updatescript.txt, %A_WorkingDir%\updatescript.bat
+GuiControl,, UpdateProg, +25
+Run %A_WorkingDir%\updatescript.bat
+GuiControl,, UpdateProg, +25
+Sleep, 1000
+ExitApp
+}
 press = 0
 input = 0
 startstop = 0
