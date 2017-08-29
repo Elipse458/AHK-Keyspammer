@@ -11,5 +11,5 @@ Note: You need AutoHotkey for this to work, You can download it on https://autoh
 - Configurable spam toggle key (Support for MB4 & MB5)
 
 **To-do**
-- Presets
+- Presets (save & load)
 - Clean up
