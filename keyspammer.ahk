@@ -1,6 +1,6 @@
 ;#SingleInstance off
 ;The following code is written by an amateur so please don't judge (but it works so i'm happy)
-currentver = 1.3
+currentver = 1.4
 currentver += 0.0
 
 ConnectedToInternet(flag=0x40) { 
@@ -53,21 +53,16 @@ else
 	MsgBox, No internet connection!
 	Gui, Destroy
 }
-toggledheight := A_ScreenHeight-77
-toggledwidth := A_ScreenWidth-100
+;----------------------------------------------------------------------------------------------------------------------------------------------------;
+;^                                                                     UPDATER                                                                       ^
+;----------------------------------------------------------------------------------------------------------------------------------------------------;
 DetectHiddenWindows, On
+SetWorkingDir %A_WorkingDir%
 press = 0
 input = 0
 startstop = 0
 startstop1 := off
 oldtogglekey = 
-Gui, New,, Toggled
-Gui, Font, s12 W700 cBlue
-Gui, Color, 000000
-Gui, Add, Text,, Toggled
-WinSet, TransColor, 000000 254, Toggled
-WinSet, ExStyle, +0x20
-Gui, +LastFound +AlwaysOnTop +ToolWindow -Caption +0x08000000
 Gui(){
 global
 Gui, New,, KeySpammer Settings
@@ -80,12 +75,20 @@ Gui, Add, Hotkey, vspamkey X140 Y71
 Gui, Add, Text, cWhite X10, Key to toggle spam
 Gui, Add, DDL, vtoggleddl gtoggleddl Choose1, Other|Mb4|Mb5
 Gui, Add, Hotkey, vtogglekey X140 Y117
-Gui, Add, Button, X10, Done
-Gui, Add, Button,, Reset
-Gui, Add, Text, X300 Y175, v1.3`nBy Elipse458
+Gui, Add, Button, X10 Y194 gButtonDone, Done
+Gui, Add, Button, X53 Y194 gButtonReset, Reset
+IfExist, KeySpammer.ini
+{
+	IniRead, presetlist, KeySpammer.ini
+	StringReplace,presets,presetlist,`n,|,A
+	Gui, Font, W500, s6
+	Gui, Add, DDL, vpresetddl gpresetload X140 Y25 W116, %presets%
+}
+Gui, Add, Button, X98 Y194 gButtonSavePreset, Save Preset
+Gui, Add, Text, X300 Y195, v1.4`nBy Elipse458
 Gui, Font, W700 s12
 Gui, Add, Text, c9999FF X275 Y5, F1+Esc - `nemergency`nexit`nF2 - menu`nF3 - info`nF4 - info off
-Gui, Show, Center W375
+Gui, Show, Center W375 H225
 }
 Gui()
 F3::goto infoon
@@ -165,10 +168,10 @@ else if input is number
 {
 if oldtogglekey
 {
-Hotkey, %oldtogglekey%, Off
+Hotkey, $~%oldtogglekey%, Off
 }
 sleeptime := input * 1000
-Hotkey, %togglekey%, startstop
+Hotkey, $~%togglekey%, startstop
 oldtogglekey := togglekey
 MsgBox, Delay is %sleeptime%ms - Key to spam %spamkey1% - Key to toggle spam %togglekey1%
 }
@@ -187,6 +190,90 @@ spamkey=""
 togglekey=""
 Return
 
+ButtonSavePreset:
+gosub, ButtonDone
+inispamkey := spamkey1
+initogglekey := togglekey1
+InputBox, presetname, Name of preset
+If (input="") or (inispamkey="") or (initogglekey="") or (presetname="")
+{
+	MsgBox, None of the fields or preset name can be empty!
+	Return
+}
+else
+{
+	if (not inispamkey)
+		inispamkey = spamkey
+	if (not initogglekey)
+		initogglekey = togglekey
+	IniWrite, %inispamkey%, KeySpammer.ini, %presetname%, spamkey
+	IniWrite, %initogglekey%, KeySpammer.ini, %presetname%, togglekey
+	IniWrite, %input%, KeySpammer.ini, %presetname%, delay
+	MsgBox, Preset saved!
+	Return
+}
+Return
+
+presetload:
+GuiControlGet, presetddl,, presetddl
+IniRead, inidelay, KeySpammer.ini, %presetddl%, delay
+IniRead, inispamkey, KeySpammer.ini, %presetddl%, spamkey
+IniRead, initogglekey, KeySpammer.ini, %presetddl%, togglekey
+If (inidelay="") or (inispamkey="") or (initogglekey="") or (inidelay is not number)
+{
+	MsgBox, Preset could not be loaded!`nSome key values are missing or are corrupted.
+	Return
+}
+else
+{
+	input=inidelay
+	if (inispamkey="LMB") or (inispamkey="RMB")
+	{
+		if inispamkey = LMB
+		{
+			GuiControl, Choose, spamddl, 2
+			gosub, spamddl
+		}
+		if inispamkey = RMB
+		{
+			GuiControl, Choose, spamddl, 3
+			gosub, spamddl
+		}
+	}
+	else
+	{
+		spamkey=inispamkey
+		GuiControl,, spamkey, %inispamkey%
+		GuiControl, Choose, spamddl, 1
+		gosub spamddl
+	}
+	if (initogglekey="Mb4") or (initogglekey="Mb5")
+	{
+		if initogglekey = Mb4
+		{
+			GuiControl, Choose, toggleddl, 2
+			gosub, toggleddl
+		}
+		if initogglekey = Mb5
+		{
+			GuiControl, Choose, toggleddl, 3
+			gosub, toggleddl
+		}
+	}
+	else
+	{
+		togglekey=initogglekey
+		GuiControl,, togglekey, %initogglekey%
+		GuiControl, Choose, toggleddl, 1
+		gosub toggleddl
+	}
+	GuiControl, , input, %inidelay%
+	GuiControl, , spamkey, %inispamkey%
+	GuiControl, , togglekey, %initogglekey%
+	MsgBox, Preset loaded!`nPress done to apply.
+}
+Return
+
 infoon:
 SetTimer, info, 250
 Return
@@ -202,7 +289,6 @@ Return
 
 startstop:
 SoundBeep, 10, 10
-SetTimer, toggledremove, 2500
 if startstop = 1
 {
 SetTimer, spam, off
@@ -215,11 +301,6 @@ SetTimer, spam, %sleeptime%
 startstop = 1
 startstop1 = on
 }
-Return
-
-toggledremove:
-SetTimer, toggledremove, Off
-Gui, Hide
 Return
 
 spam:
