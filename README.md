@@ -16,3 +16,4 @@ Note: You need AutoHotkey for this to work, You can download it on https://autoh
 
 **To-do**
 - Clean up
+- exe version (probably)
