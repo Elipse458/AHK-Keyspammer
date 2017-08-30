@@ -91,9 +91,9 @@ Gui, Add, Text, c9999FF X275 Y5, F1+Esc - `nemergency`nexit`nF2 - menu`nF3 - inf
 Gui, Show, Center W375 H225
 }
 Gui()
-F3::goto infoon
-F4::goto infooff
-F2::Gui()
+$~F3::goto infoon
+$~F4::goto infooff
+$~F2::Gui()
 F1 & Esc::ExitApp
 Pause
 
