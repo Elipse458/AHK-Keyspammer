@@ -12,7 +12,7 @@ Note: You need AutoHotkey for this to work, You can download it on https://autoh
 - Configurable key to spam (support for LMB & RMB)
 - Configurable spam toggle key (Support for MB4 & MB5)
 - Sound on toggle
+- Presets (save & load)
 
 **To-do**
-- Presets (save & load)
 - Clean up
