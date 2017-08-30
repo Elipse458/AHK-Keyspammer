@@ -209,7 +209,7 @@ else
 	IniWrite, %inispamkey%, KeySpammer.ini, %presetname%, spamkey
 	IniWrite, %initogglekey%, KeySpammer.ini, %presetname%, togglekey
 	IniWrite, %input%, KeySpammer.ini, %presetname%, delay
-	MsgBox, Preset saved!
+	MsgBox, Preset saved!`nClose the settings window and press F2 to see your new preset.
 	Return
 }
 Return
